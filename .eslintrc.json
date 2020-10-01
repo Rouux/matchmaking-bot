@@ -1,0 +1,29 @@
+{
+	"env": {
+		"es2020": true,
+		"node": true
+	},
+	"extends": [
+		"eslint:recommended",
+		"airbnb-base",
+		"plugin:@typescript-eslint/eslint-recommended",
+		"plugin:@typescript-eslint/recommended",
+		"plugin:prettier/recommended"
+	],
+	"parser": "@typescript-eslint/parser",
+	"parserOptions": {
+		"ecmaVersion": 11,
+		"sourceType": "module"
+	},
+	"plugins": ["@typescript-eslint", "prettier"],
+	"rules": {
+		"import/no-unresolved": "off",
+		"import/extensions": "off",
+		"import/prefer-default-export": "off",
+		"no-underscore-dangle": "off",
+		"class-methods-use-this": "off",
+		"quotes": ["error", "backtick"],
+		"max-classes-per-file": "off",
+		"no-param-reassign": "warn"
+	}
+}
