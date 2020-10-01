@@ -1,3 +1,3 @@
-# Discord Bot - Roux
+# Matchmaking Discord Bot - Roux
 
-A simple Typescript discord bot
+Ever wanted to find friends to play with ?

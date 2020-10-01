@@ -1,10 +1,10 @@
 {
-	"name": "discord-bot-template",
+	"name": "matchmaking-discord-bot",
 	"author": "Thomas 'Roux' Raverdy",
 	"license": "MIT",
-	"version": "1.0.0",
-	"homepage": "https://github.com/Roux-corp/discord-bot-template#readme",
-	"description": "A simple Typescript discord bot",
+	"version": "1.0.0-SNAPSHOT",
+	"homepage": "https://github.com/Rouux/matchmaking-bot#readme",
+	"description": "Ever wanted to find friends to play with ?",
 	"engines": {
 		"node": ">=12.18.3"
 	},
@@ -18,11 +18,11 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/Roux-corp/discord-roux.git"
+		"url": "git+https://github.com/Rouux/matchmaking-bot.git"
 	},
 	"keywords": [],
 	"bugs": {
-		"url": "https://github.com/Roux-corp/discord-roux/issues"
+		"url": "https://github.com/Rouux/matchmaking-bot/issues"
 	},
 	"devDependencies": {
 		"@types/common-tags": "^1.8.0",
