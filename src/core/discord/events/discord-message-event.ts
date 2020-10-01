@@ -17,7 +17,7 @@ export class DiscordMessageEvent extends DiscordEvent {
 		const args = message.content.slice(prefix.length).trim().split(/ +/g);
 		const callname = args.shift()?.toLowerCase();
 		if (!callname) return;
-		// eslint-disable-next-line no-use-before-define
+
 		await DiscordCommandService.INSTANCE.call(message, callname, ...args);
 	}
 }

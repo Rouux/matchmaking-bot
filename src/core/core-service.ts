@@ -1,8 +1,6 @@
 import _ from "lodash";
-import path from "path";
 import { DiscordService } from "./discord/discord-service";
 import { ICoreConfig } from "./interfaces/core-config-interface";
-import langs from "./utils/langs";
 import { LoggerService } from "./utils/logger/logger-service";
 
 export class CoreService {
@@ -16,15 +14,9 @@ export class CoreService {
 	}
 
 	public async start(config: ICoreConfig): Promise<void> {
-		const {
-			root,
-			langsPath = config.langsPath || path.join(root, `langs`),
-			locale,
-			logger,
-		} = config;
+		const { logger } = config;
 
 		return Promise.resolve() // Just to keep each init lined up
-			.then(() => langs.init(langsPath, locale))
 			.then(() => LoggerService.INSTANCE.init(logger))
 			.then(() => DiscordService.INSTANCE.start(config))
 			.then(() => {
