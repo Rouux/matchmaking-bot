@@ -38,7 +38,10 @@ export class DiscordFindCommand extends DiscordCommand {
 			return this.usageError(this, `The selected locale is WRONG`);
 
 		const games = await this._matchmakingService.findGames(locale, game);
-		return `\`\`\`${this._gamesAsList(games)}\`\`\``;
+		const list = this._gamesAsList(games);
+		if (!list || list.length === 0)
+			return `No game were found for this game :(`;
+		return `\`\`\`${list}\`\`\``;
 	}
 
 	private _gamesAsList(games: Game[]) {
