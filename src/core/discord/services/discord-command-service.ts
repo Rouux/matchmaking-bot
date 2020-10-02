@@ -20,11 +20,11 @@ export class DiscordCommandService {
 	public async call(
 		message: Message,
 		callname: string,
-		...args: string[]
+		args: string[]
 	): Promise<void> {
 		const command = this._repository.getCommand(callname);
 		this._canBeExecuted(message, command).then(async condition => {
-			if (condition && command) await command.executeCommand(message, ...args);
+			if (condition && command) await command.executeCommand(message, args);
 		});
 	}
 

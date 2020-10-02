@@ -11,9 +11,6 @@ async function main(config: DotenvParseOutput): Promise<void> {
 		root: path.join(__dirname),
 		prefix: `!`,
 		discordToken: config.DISCORD_TOKEN,
-		logger: {
-			debug: false,
-		},
 		client: {
 			owner: `230336648942977024`,
 		},

@@ -18,6 +18,6 @@ export class DiscordMessageEvent extends DiscordEvent {
 		const callname = args.shift()?.toLowerCase();
 		if (!callname) return;
 
-		await DiscordCommandService.INSTANCE.call(message, callname, ...args);
+		await DiscordCommandService.INSTANCE.call(message, callname, args);
 	}
 }

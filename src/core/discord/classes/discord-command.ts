@@ -41,10 +41,7 @@ export abstract class DiscordCommand {
 		};
 	}
 
-	public async executeCommand(
-		message: Message,
-		...args: string[]
-	): Promise<void> {
+	public async executeCommand(message: Message, args: string[]): Promise<void> {
 		if (this._lackMandatoryArgument(args, message)) return;
 
 		args
@@ -52,7 +49,7 @@ export abstract class DiscordCommand {
 			.map(arg => arg.slice(2)) // Remove the '--'
 			.filter(arg => this.data.arguments.map(cmd => cmd.name).includes(arg))
 			.forEach(arg => this._collectArgument(arg));
-		await this.handleCommand(message, ...args);
+		await this.handleCommand(message, args);
 		this._commandService.repository.commandCalled(this, message);
 	}
 
@@ -114,7 +111,7 @@ export abstract class DiscordCommand {
 
 	protected abstract async handleCommand(
 		message: Message,
-		...args: string[]
+		args: string[]
 	): Promise<unknown>;
 
 	public hasArgument(name: string): boolean {
