@@ -1,14 +1,13 @@
 import { TextChannel, VoiceChannel } from "discord.js";
-import { UnknownObject } from "src/core/utils/types";
 
-export type GameOptions = {
+export type LobbyOptions = {
 	name: string;
 	size: number;
 	locale: string;
 	description: string;
 };
 
-export class Game {
+export class Lobby {
 	public readonly name: string;
 
 	public readonly size: number;
@@ -23,7 +22,7 @@ export class Game {
 
 	public textChannel: TextChannel;
 
-	constructor(options: GameOptions) {
+	constructor(options: LobbyOptions) {
 		this.name = options.name || ``;
 		this.locale = options.locale || `EN`;
 		this.size = options.size || 2;

@@ -1,36 +1,36 @@
 import { LoggerService } from "../core/utils/logger/logger-service";
-import { Game } from "../classes/game";
+import { Lobby } from "../classes/lobby";
 import { FirebaseService } from "../firebase/firebase-service";
 
 export class MatchmakingService {
-	public async findGames(locale: string, name: string): Promise<Game[]> {
+	public async findLobbies({ locale, name }: Partial<Lobby>): Promise<Lobby[]> {
 		LoggerService.INSTANCE.debug({
-			context: `MatchmakingService::findGames`,
+			context: `MatchmakingService::findLobbiesByLocalAndName`,
 			message: `locale: ${locale}, name: ${name}`,
 		});
-		const games = await FirebaseService.getActiveGamesByLocale(locale);
+		const lobbies = await FirebaseService.getLobbiesByLocale(locale);
 
-		return games.filter(game => game.name === name);
+		return lobbies.filter(lobby => lobby.name === name);
 	}
 
-	public async createGame(
+	public async createLobby(
 		locale: string,
 		name: string,
 		size: number,
 		description?: string
-	): Promise<Game> {
+	): Promise<Lobby> {
 		LoggerService.INSTANCE.debug({
-			context: `MatchmakingService::createGame`,
+			context: `MatchmakingService::createLobby`,
 			message: `locale: ${locale}, name: ${name}, size: ${size}, description: ${description}`,
 		});
 		description = description || ``;
-		const game = await FirebaseService.createGame(
-			new Game({ locale, name, size, description })
+		const lobby = await FirebaseService.createLobby(
+			new Lobby({ locale, name, size, description })
 		);
 		LoggerService.INSTANCE.debug({
-			context: `MatchmakingService::createGame`,
-			message: `id: ${game.documentId}`,
+			context: `MatchmakingService::createLobby`,
+			message: `id: ${lobby.documentId}`,
 		});
-		return game;
+		return lobby;
 	}
 }

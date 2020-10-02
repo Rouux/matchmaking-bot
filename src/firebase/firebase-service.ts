@@ -1,6 +1,6 @@
 import firebase, { ServiceAccount } from "firebase-admin";
 import { toJson } from "../utils/utils";
-import { Game } from "../classes/game";
+import { Lobby } from "../classes/lobby";
 import credentials from "./credential.json";
 
 firebase.initializeApp({
@@ -9,35 +9,35 @@ firebase.initializeApp({
 });
 
 export class FirebaseService {
-	public static readonly firestore: FirebaseFirestore.Firestore = firebase.firestore();
+	public static readonly firestore = firebase.firestore();
 
-	public static async createGame(game: Game): Promise<Game> {
+	public static async createLobby(lobby: Lobby): Promise<Lobby> {
 		await this.firestore
-			.collection(`lobbies/${game.locale}/active-games`)
-			.add(toJson(game))
+			.collection(`lobbies/${lobby.locale}/active`)
+			.add(toJson(lobby))
 			.then(docRef => docRef.get())
 			.then(snapshot => snapshot.id)
 			.then(id => {
-				game.documentId = id;
+				lobby.documentId = id;
 				return id;
 			})
 			.then(id =>
 				this.firestore
-					.collection(`lobbies/${game.locale}/active-games`)
+					.collection(`lobbies/${lobby.locale}/active`)
 					.doc(id)
 					.update({
 						id,
 					})
 			);
-		return game;
+		return lobby;
 	}
 
-	public static async getActiveGamesByLocale(locale = `FR`): Promise<Game[]> {
+	public static async getLobbiesByLocale(locale = `FR`): Promise<Lobby[]> {
 		const collection = await this.firestore
-			.collection(`lobbies/${locale}/active-games`)
+			.collection(`lobbies/${locale}/active`)
 			.listDocuments();
 
-		return (this._getDocuments(collection) as unknown) as Game[];
+		return (await this._getDocuments(collection)).map(lobby => lobby as Lobby);
 	}
 
 	private static async _getDocuments(

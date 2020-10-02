@@ -4,7 +4,7 @@
 	"license": "MIT",
 	"version": "1.0.0-SNAPSHOT",
 	"homepage": "https://github.com/Rouux/matchmaking-bot#readme",
-	"description": "Ever wanted to find friends to play with ?",
+	"description": "Ever wanted to find friends to play or talk with ?",
 	"engines": {
 		"node": ">=12.18.3"
 	},
