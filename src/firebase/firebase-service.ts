@@ -32,6 +32,32 @@ export class FirebaseService {
 		return lobby;
 	}
 
+	public static async getLobbies(): Promise<Lobby[]> {
+		const collection = this.firestore.collection(`lobbies`);
+
+		const result: FirebaseFirestore.DocumentData[] = [];
+		await this._recursive(collection, result);
+		console.log(result);
+		return result.map(lobby => lobby as Lobby);
+	}
+
+	private static async _recursive(
+		collection: FirebaseFirestore.CollectionReference<
+			FirebaseFirestore.DocumentData
+		>,
+		result: FirebaseFirestore.DocumentData[]
+	) {
+		return Promise.all(
+			(await collection.listDocuments()).map(async docRef => {
+				result.push((await docRef.get()).data()!);
+				const list = await docRef.listCollections();
+				list.forEach(async c => {
+					await this._recursive(c, result);
+				});
+			})
+		);
+	}
+
 	public static async getLobbiesByLocale(locale = `FR`): Promise<Lobby[]> {
 		const collection = await this.firestore
 			.collection(`lobbies/${locale}/active`)

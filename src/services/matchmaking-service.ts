@@ -13,6 +13,10 @@ export class MatchmakingService {
 		return lobbies.filter(lobby => lobby.name === name);
 	}
 
+	public async all(): Promise<Lobby[]> {
+		return FirebaseService.getLobbies();
+	}
+
 	public async createLobby(
 		locale: string,
 		name: string,
