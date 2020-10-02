@@ -12,3 +12,4 @@ typings/
 .env.test
 build/
 dist/
+credential.*
