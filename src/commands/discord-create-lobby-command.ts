@@ -1,17 +1,18 @@
 import { Message } from "discord.js";
-import { Game } from "src/classes/game";
+import _ from "lodash";
 import { MatchmakingService } from "../services/matchmaking-service";
 import { LOCALES } from "../utils/constants";
 import { DiscordCommand } from "../core/discord/classes/discord-command";
 
 const SPLIT_CHARACTERS = [`/`, `,`, `-`];
 
-export class DiscordFindCommand extends DiscordCommand {
+export class DiscordCreateLobbyCommand extends DiscordCommand {
 	private _matchmakingService: MatchmakingService;
 
 	constructor() {
-		super(`find`, {
-			description: `Find a lobby`,
+		super(`create`, {
+			aliases: [`cl`],
+			description: `Create a lobby`,
 		});
 		this._matchmakingService = new MatchmakingService();
 	}
@@ -27,24 +28,28 @@ export class DiscordFindCommand extends DiscordCommand {
 				this,
 				`The split character was not found !`
 			);
-		const formatedArgs = this._buildArguments(args, splitChar, 2);
+		const formatedArgs = this._buildArguments(args, splitChar, 4);
 		const result = await this._request(formatedArgs);
 		return message.channel.send(result);
 	}
 
-	private async _request([locale, game]: string[]): Promise<string> {
+	private async _request([locale, name, size, description]: string[]): Promise<
+		string
+	> {
 		locale = locale.toUpperCase();
 		if (!LOCALES.includes(locale.toUpperCase()))
-			return this.usageError(this, `The selected locale is WRONG`);
+			return this.usageError(this, `The given locale is WRONG`);
+		const sizeAsNumber = Number.parseInt(size, 10);
+		if (_.isNaN(sizeAsNumber))
+			return this.usageError(this, `The given size is WRONG`);
 
-		const games = await this._matchmakingService.findGames(locale, game);
-		return `\`\`\`${this._gamesAsList(games)}\`\`\``;
-	}
-
-	private _gamesAsList(games: Game[]) {
-		return games
-			.map(g => `[${g.locale}] - (${g.size}) - ${g.name}\n\t\t${g.description}`)
-			.join(`\n`);
+		const game = await this._matchmakingService.createGame(
+			locale,
+			name,
+			sizeAsNumber,
+			description
+		);
+		return `The lobby for ${game.name} was made.`;
 	}
 
 	private _buildArguments(

@@ -1,4 +1,5 @@
 import { TextChannel, VoiceChannel } from "discord.js";
+import { UnknownObject } from "src/core/utils/types";
 
 export type GameOptions = {
 	name: string;
@@ -16,11 +17,11 @@ export class Game {
 
 	public readonly description: string;
 
-	private id: string;
+	public documentId: string;
 
-	private voiceChannel: VoiceChannel;
+	public voiceChannel: VoiceChannel;
 
-	private textChannel: TextChannel;
+	public textChannel: TextChannel;
 
 	constructor(options: GameOptions) {
 		this.name = options.name || ``;
