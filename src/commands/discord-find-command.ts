@@ -6,7 +6,7 @@ import { DiscordCommand } from "../core/discord/classes/discord-command";
 
 const SPLIT_CHARACTERS = [`/`, `,`, `-`];
 
-export class DiscordMatchCommand extends DiscordCommand {
+export class DiscordFindCommand extends DiscordCommand {
 	private matchmakingService: MatchmakingService;
 
 	constructor() {
