@@ -44,10 +44,7 @@ export class MatchmakingService {
 		return guild;
 	}
 
-	private async createChannels(
-		lobby: Lobby,
-		guild: Guild
-	): Promise<LobbyChannels> {
+	private async createChannels(guild: Guild): Promise<LobbyChannels> {
 		const id = Date.now();
 		const categoryChannel = await this.createCategoryChannel(guild, id);
 		const textChannel = (
