@@ -17,7 +17,11 @@ export class DiscordCommandService {
 		return DiscordCommandService._instance;
 	}
 
-	public async call(message: Message, callname: string, args: string[]): Promise<void> {
+	public async call(
+		message: Message,
+		callname: string,
+		args: string[],
+	): Promise<void> {
 		const command = this._repository.getCommand(callname);
 		this._canBeExecuted(message, command).then(async (condition) => {
 			if (condition && command) await command.executeCommand(message, args);
@@ -52,7 +56,7 @@ export class DiscordCommandService {
 	}
 
 	private _isGuildOnlyCommandNotCalledInGuild(
-		command: DiscordCommand, 
+		command: DiscordCommand,
 		message: Message,
 	): boolean {
 		return command.isGuildOnly() && message.guild === null;

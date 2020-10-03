@@ -20,17 +20,17 @@ export class FirebaseService {
 
 	public static async getAvailableHostGuild(): Promise<HostGuild | undefined> {
 		const docs = await this.getDocumentsRef(`host-guilds`);
-		const datas = await getDocumentsData<HostGuild>(docs);
-		return datas.find(data => data !== undefined && data.guildId !== undefined);
+		const hostGuilds = await getDocumentsData<HostGuild>(docs);
+		return hostGuilds.find(
+			(hostGuild) => hostGuild !== undefined && hostGuild.guildId !== undefined,
+		);
 	}
 
 	public static async createLobby(lobby: Lobby): Promise<Lobby> {
-		await collectionAdd(
-			this.getCollectionRef(`lobbies/${lobby.locale}/active`), lobby,
-		)
-			.then(docRef => docRef.get())
-			.then(snapshot => snapshot.id)
-			.then(id => {
+		await collectionAdd(this.getCollectionRef(`lobbies/${lobby.locale}/active`), lobby)
+			.then((docRef) => docRef.get())
+			.then((snapshot) => snapshot.id)
+			.then((id) => {
 				lobby.documentId = id;
 			});
 		return lobby;
@@ -69,16 +69,11 @@ export class FirebaseService {
 		return this.firestore.collection(path);
 	}
 
-	private static getDocumentRef(
-		path: string,
-		documentId: string,
-	): DocumentReference {
+	private static getDocumentRef(path: string, documentId: string): DocumentReference {
 		return this.firestore.collection(path).doc(documentId);
 	}
 
-	private static async getDocumentsRef(
-		path: string,
-	): Promise<DocumentReference[]> {
+	private static async getDocumentsRef(path: string): Promise<DocumentReference[]> {
 		return this.firestore.collection(path).listDocuments();
 	}
 }

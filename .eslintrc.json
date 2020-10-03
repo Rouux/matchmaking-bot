@@ -42,7 +42,7 @@
 				"ignoreRegExpLiterals": true
 			}
 		],
-		"max-depth": ["error", 3],
+		"max-depth": ["error", 2],
 		"max-lines-per-function": ["error", { "max": 20, "skipBlankLines": true }],
 		"semi": ["error", "always"],
 		"prefer-destructuring": "warn"
