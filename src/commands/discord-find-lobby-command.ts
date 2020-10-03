@@ -24,13 +24,11 @@ export class DiscordFindLobbyCommand extends MatchmakingCommand {
 		if (!LOCALES.includes(locale.toUpperCase()))
 			return this.usageError(this, `The selected locale is WRONG`);
 
-		const lobbies = await this.matchmakingService.findLobbies({
-			locale,
-			name,
-		});
+		const lobbies = await this.matchmakingService.findLobbies({ locale, name });
 		const lobbiesDisplayList = this._lobbiesDisplay(lobbies);
 		if (!lobbiesDisplayList || lobbiesDisplayList.length === 0)
 			return `No lobby was found for "${name}" :(`;
+
 		return `\`\`\`\n${lobbiesDisplayList}\`\`\``;
 	}
 

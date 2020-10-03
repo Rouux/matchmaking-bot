@@ -12,29 +12,25 @@ export class DiscordCreateLobbyCommand extends MatchmakingCommand {
 		});
 	}
 
-	protected async handleCommand(
-		message: Message,
-		args: string[],
-	): Promise<Message> {
+	protected async handleCommand(message: Message, args: string[]): Promise<Message> {
 		const splitChar = this.autoDetectSplitCharacter(args);
 		if (!splitChar)
-			return this.sendUsageError(
-				message, this, `The split character was not found !`,
-			);
+			return this.sendUsageError(message, this, `The split character was not found !`);
 		const formatedArgs = this.splitArguments(args, splitChar, 4);
 		const result = await this._request(formatedArgs);
 		return message.channel.send(result);
 	}
 
-	private async _request([locale, name, size, description]: string[]): Promise<
-		string
-	> {
+	private async _request([locale, name, size, description]: string[]): Promise<string> {
 		locale = locale.toUpperCase();
 		if (!LOCALES.includes(locale.toUpperCase()))
 			return this.usageError(this, `The given locale is WRONG`);
 		const sizeAsNumber = Number.parseInt(size, 10);
 		if (_.isNaN(sizeAsNumber))
-			return this.usageError(this, `The given size is WRONG`);
+			return this.usageError(this, `The given size is not valid number`);
+		const { min, max } = MatchmakingCommand.SIZE_RANGE;
+		if (sizeAsNumber < min || sizeAsNumber > max)
+			return this.usageError(this, `The given size is out of range : [${min}, ${max}]`);
 
 		const lobby = await this.matchmakingService.createLobby({
 			locale,
