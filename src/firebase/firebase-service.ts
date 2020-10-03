@@ -1,6 +1,7 @@
 import firebase, { ServiceAccount } from "firebase-admin";
+import { HostGuild } from "../classes/models/host-guild";
 import { toJson } from "../utils/utils";
-import { Lobby } from "../classes/lobby";
+import { Lobby } from "../classes/models/lobby";
 import credentials from "./credential.json";
 
 firebase.initializeApp({
@@ -11,6 +12,13 @@ firebase.initializeApp({
 export class FirebaseService {
 	public static readonly firestore = firebase.firestore();
 
+	public static async getAvailableHostGuild(): Promise<HostGuild | undefined> {
+		const docs = await this.firestore.collection(`host-guilds`).listDocuments();
+		return (await Promise.all(docs.map(async doc => (await doc.get()).data())))
+			.map(data => data as HostGuild)
+			.find(data => data !== undefined && data.guildId !== undefined);
+	}
+
 	public static async createLobby(lobby: Lobby): Promise<Lobby> {
 		await this.firestore
 			.collection(`lobbies/${lobby.locale}/active`)
@@ -19,16 +27,17 @@ export class FirebaseService {
 			.then(snapshot => snapshot.id)
 			.then(id => {
 				lobby.documentId = id;
-				return id;
-			})
-			.then(id =>
-				this.firestore
-					.collection(`lobbies/${lobby.locale}/active`)
-					.doc(id)
-					.update({
-						id,
-					})
-			);
+			});
+		return lobby;
+	}
+
+	public static async updateLobby(lobby: Lobby): Promise<Lobby> {
+		await this.firestore
+			.collection(`lobbies/${lobby.locale}/active`)
+			.doc(lobby.documentId)
+			.update({
+				...lobby,
+			});
 		return lobby;
 	}
 

@@ -1,9 +1,9 @@
 import { Message } from "discord.js";
-import { Lobby } from "../classes/lobby";
+import { Lobby } from "../classes/models/lobby";
 import { LOCALES } from "../utils/constants";
 import { MatchmakingCommand } from "../classes/matchmaking-command";
 
-export class DiscordFindCommand extends MatchmakingCommand {
+export class DiscordFindLobbyCommand extends MatchmakingCommand {
 	constructor() {
 		super(`find`, {
 			description: `Find a lobby`,
@@ -38,7 +38,7 @@ export class DiscordFindCommand extends MatchmakingCommand {
 		const lobbiesDisplayList = this._lobbiesDisplay(lobbies);
 		if (!lobbiesDisplayList || lobbiesDisplayList.length === 0)
 			return `No lobby were found with the name "${name}" :(`;
-		return `\`\`\`${lobbiesDisplayList}\`\`\``;
+		return `\`\`\`\n${lobbiesDisplayList}\`\`\``;
 	}
 
 	private _lobbiesDisplay(lobbies: Lobby[]) {

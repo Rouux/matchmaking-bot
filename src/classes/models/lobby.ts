@@ -1,10 +1,14 @@
-import { TextChannel, VoiceChannel } from "discord.js";
-
 export type LobbyOptions = {
 	name: string;
 	size: number;
 	locale: string;
 	description: string;
+};
+
+export type LobbyChannels = {
+	categoryChannel: string;
+	voiceChannel: string;
+	textChannel: string;
 };
 
 export class Lobby {
@@ -18,9 +22,7 @@ export class Lobby {
 
 	public documentId: string;
 
-	public voiceChannel: VoiceChannel;
-
-	public textChannel: TextChannel;
+	public channels: LobbyChannels;
 
 	constructor(options: LobbyOptions) {
 		this.name = options.name || ``;

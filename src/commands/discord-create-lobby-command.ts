@@ -43,6 +43,7 @@ export class DiscordCreateLobbyCommand extends MatchmakingCommand {
 			sizeAsNumber,
 			description
 		);
+		if (!lobby) return `Sadly no slot is available at the moment :(`;
 		return `The lobby for ${lobby.name} was made.`;
 	}
 }
