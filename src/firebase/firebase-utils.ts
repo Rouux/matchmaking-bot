@@ -1,7 +1,13 @@
+import {
+	CollectionReference,
+	DocumentReference,
+	WriteResult,
+} from "./firebase-types";
+
 export function collectionAdd(
-	collectionRef: FirebaseFirestore.CollectionReference,
+	collectionRef: CollectionReference,
 	data = {}
-): Promise<FirebaseFirestore.DocumentReference> {
+): Promise<DocumentReference> {
 	return collectionRef.add({
 		createdAt: Date.now(),
 		lastUpdatedAt: Date.now(),
@@ -10,9 +16,9 @@ export function collectionAdd(
 }
 
 export function documentSet(
-	documentRef: FirebaseFirestore.DocumentReference,
+	documentRef: DocumentReference,
 	data = {}
-): Promise<FirebaseFirestore.WriteResult> {
+): Promise<WriteResult> {
 	return documentRef.set({
 		createdAt: Date.now(),
 		lastUpdatedAt: Date.now(),
@@ -21,9 +27,9 @@ export function documentSet(
 }
 
 export function documentUpdate(
-	documentRef: FirebaseFirestore.DocumentReference,
+	documentRef: DocumentReference,
 	data = {}
-): Promise<FirebaseFirestore.WriteResult> {
+): Promise<WriteResult> {
 	return documentRef.update({
 		lastUpdatedAt: Date.now(),
 		...data,
@@ -31,13 +37,13 @@ export function documentUpdate(
 }
 
 export async function getDocumentData<T>(
-	document: FirebaseFirestore.DocumentReference
+	document: DocumentReference
 ): Promise<T | undefined> {
 	return document.get().then(snapshot => snapshot.data() as T | undefined);
 }
 
 export async function getDocumentsData<T>(
-	documents: FirebaseFirestore.DocumentReference[],
+	documents: DocumentReference[],
 	filterUndefined = true
 ): Promise<(T | undefined)[]> {
 	return (

@@ -2,6 +2,7 @@ import firebase, { ServiceAccount } from "firebase-admin";
 import { HostGuild } from "../classes/models/host-guild";
 import { Lobby } from "../classes/models/lobby";
 import credentials from "./credential.json";
+import { CollectionReference, DocumentReference } from "./firebase-types";
 import {
 	collectionAdd,
 	documentUpdate,
@@ -49,22 +50,20 @@ export class FirebaseService {
 		return getDocumentsData<Lobby>(collection);
 	}
 
-	private static getCollectionRef(
-		path: string
-	): FirebaseFirestore.CollectionReference {
+	private static getCollectionRef(path: string): CollectionReference {
 		return this.firestore.collection(path);
 	}
 
 	private static getDocumentRef(
 		path: string,
 		documentId: string
-	): FirebaseFirestore.DocumentReference {
+	): DocumentReference {
 		return this.firestore.collection(path).doc(documentId);
 	}
 
 	private static async getDocumentsRef(
 		path: string
-	): Promise<FirebaseFirestore.DocumentReference[]> {
+	): Promise<DocumentReference[]> {
 		return this.firestore.collection(path).listDocuments();
 	}
 }
