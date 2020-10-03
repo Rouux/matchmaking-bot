@@ -1,8 +1,8 @@
 import firebase, { ServiceAccount } from "firebase-admin";
 import { HostGuild } from "../classes/models/host-guild";
-import { toJson } from "../utils/utils";
 import { Lobby } from "../classes/models/lobby";
 import credentials from "./credential.json";
+import { collectionAdd, documentUpdate, getDocuments } from "./firebase-utils";
 
 firebase.initializeApp({
 	credential: firebase.credential.cert(<ServiceAccount>credentials),
@@ -20,9 +20,10 @@ export class FirebaseService {
 	}
 
 	public static async createLobby(lobby: Lobby): Promise<Lobby> {
-		await this.firestore
-			.collection(`lobbies/${lobby.locale}/active`)
-			.add(toJson(lobby))
+		const collectionRef = this.firestore.collection(
+			`lobbies/${lobby.locale}/active`
+		);
+		collectionAdd(collectionRef, lobby)
 			.then(docRef => docRef.get())
 			.then(snapshot => snapshot.id)
 			.then(id => {
@@ -32,12 +33,10 @@ export class FirebaseService {
 	}
 
 	public static async updateLobby(lobby: Lobby): Promise<Lobby> {
-		await this.firestore
+		const docRef = this.firestore
 			.collection(`lobbies/${lobby.locale}/active`)
-			.doc(lobby.documentId)
-			.update({
-				...lobby,
-			});
+			.doc(lobby.documentId);
+		documentUpdate(docRef, lobby);
 		return lobby;
 	}
 
@@ -46,20 +45,6 @@ export class FirebaseService {
 			.collection(`lobbies/${locale}/active`)
 			.listDocuments();
 
-		return (await this._getDocuments(collection)).map(lobby => lobby as Lobby);
-	}
-
-	private static async _getDocuments(
-		collection: FirebaseFirestore.DocumentReference[]
-	): Promise<FirebaseFirestore.DocumentData[]> {
-		return Promise.all(
-			collection
-				.map(docRef => docRef.get())
-				.filter(async snapshot => (await snapshot).exists)
-				.map(
-					async snapshot =>
-						<FirebaseFirestore.DocumentData>(await snapshot).data()
-				)
-		);
+		return (await getDocuments(collection)).map(lobby => lobby as Lobby);
 	}
 }
