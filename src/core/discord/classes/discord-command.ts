@@ -71,8 +71,8 @@ export abstract class DiscordCommand {
 	}
 
 	protected usageError(command: DiscordCommand, details?: string): string {
-		let usageMessage = `There was an error using ${command.name}.`;
-		if (details) usageMessage += `\n${details}`;
+		let usageMessage = `There was an error using ${command.name}`;
+		if (details) usageMessage += ` : ${details}`;
 		usageMessage += `\nThe correct usage would be : \n\t${command.data.usage}`;
 		return usageMessage;
 	}

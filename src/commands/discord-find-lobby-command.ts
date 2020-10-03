@@ -8,26 +8,41 @@ export class DiscordFindLobbyCommand extends MatchmakingCommand {
 	constructor() {
 		super(`find`, {
 			description: `Find a lobby`,
+			aliases: [`f`],
+			cooldown: 3,
+			usage: `!find \`<lang>\` - \`<name>\``,
 		});
 	}
 
 	protected async handleCommand(message: Message, args: string[]): Promise<Message> {
 		const splitChar = this.autoDetectSplitCharacter(args);
-		if (!splitChar)
+		if (!splitChar) {
 			return this.sendUsageError(message, this, `The split character was not found !`);
+		}
 		const [locale, name] = this.splitArguments(args, splitChar, 2);
-		const lobbies = await this._request(message, locale, name);
-		if (!lobbies || lobbies.length === 0)
+		const lobbies = await this._getLobbies(message, locale, name);
+		if (!lobbies || lobbies.length === 0) {
 			return message.channel.send(`No lobby was found for "${name}" :(`);
+		}
+		const lobby = await this._getLobbyUserChosen(message, lobbies);
+		if (lobby) return this._sendInviteLink(message, lobby);
+		return message;
+	}
+
+	private async _getLobbyUserChosen(
+		message: Message,
+		lobbies: Lobby[],
+	): Promise<Lobby | undefined> {
 		await this._sendLobbyList(message, lobbies);
 		const choice = await this._awaitAnswer(message);
-		if (_.isNaN(choice)) return message;
-		if (choice < 1 || choice > lobbies.length)
-			return message.channel.send(
+		if (_.isNaN(choice)) return undefined;
+		if (choice < 1 || choice > lobbies.length) {
+			message.channel.send(
 				`The choice '${choice}' is out of range (1, ${lobbies.length})`,
 			);
-		const lobby = lobbies[choice - 1];
-		return this._sendInviteLink(message, lobby);
+			return undefined;
+		}
+		return lobbies[choice - 1];
 	}
 
 	private async _sendInviteLink(message: Message, lobby: Lobby) {
@@ -71,7 +86,7 @@ export class DiscordFindLobbyCommand extends MatchmakingCommand {
 		);
 	}
 
-	private async _request(
+	private async _getLobbies(
 		message: Message,
 		locale: string,
 		name: string,

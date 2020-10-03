@@ -24,10 +24,10 @@ export abstract class MatchmakingCommand extends DiscordCommand {
 
 	protected autoDetectSplitCharacter(
 		source: string[],
-		indexToCheckFor = 1,
+		index = 1,
 	): string | undefined {
 		return MatchmakingCommand.SPLIT_CHARACTERS.find(
-			(char) => source[indexToCheckFor] === char,
+			(char) => source[index] === char,
 		);
 	}
 }
