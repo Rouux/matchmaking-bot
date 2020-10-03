@@ -2,7 +2,11 @@ import firebase, { ServiceAccount } from "firebase-admin";
 import { HostGuild } from "../classes/models/host-guild";
 import { Lobby } from "../classes/models/lobby";
 import credentials from "./credential.json";
-import { collectionAdd, documentUpdate, getDocuments } from "./firebase-utils";
+import {
+	collectionAdd,
+	documentUpdate,
+	getDocumentsData,
+} from "./firebase-utils";
 
 firebase.initializeApp({
 	credential: firebase.credential.cert(<ServiceAccount>credentials),
@@ -13,17 +17,16 @@ export class FirebaseService {
 	public static readonly firestore = firebase.firestore();
 
 	public static async getAvailableHostGuild(): Promise<HostGuild | undefined> {
-		const docs = await this.firestore.collection(`host-guilds`).listDocuments();
-		return (await Promise.all(docs.map(async doc => (await doc.get()).data())))
-			.map(data => data as HostGuild)
-			.find(data => data !== undefined && data.guildId !== undefined);
+		const docs = await this.getDocumentsRef(`host-guilds`);
+		const datas = await getDocumentsData<HostGuild>(docs);
+		return datas.find(data => data !== undefined && data.guildId !== undefined);
 	}
 
 	public static async createLobby(lobby: Lobby): Promise<Lobby> {
-		const collectionRef = this.firestore.collection(
-			`lobbies/${lobby.locale}/active`
-		);
-		collectionAdd(collectionRef, lobby)
+		collectionAdd(
+			this.getCollectionRef(`lobbies/${lobby.locale}/active`),
+			lobby
+		)
 			.then(docRef => docRef.get())
 			.then(snapshot => snapshot.id)
 			.then(id => {
@@ -33,18 +36,35 @@ export class FirebaseService {
 	}
 
 	public static async updateLobby(lobby: Lobby): Promise<Lobby> {
-		const docRef = this.firestore
-			.collection(`lobbies/${lobby.locale}/active`)
-			.doc(lobby.documentId);
-		documentUpdate(docRef, lobby);
+		documentUpdate(
+			this.getDocumentRef(`lobbies/${lobby.locale}/active`, lobby.documentId),
+			lobby
+		);
 		return lobby;
 	}
 
 	public static async getLobbiesByLocale(locale = `FR`): Promise<Lobby[]> {
-		const collection = await this.firestore
-			.collection(`lobbies/${locale}/active`)
-			.listDocuments();
+		const collection = await this.getDocumentsRef(`lobbies/${locale}/active`);
 
-		return (await getDocuments(collection)).map(lobby => lobby as Lobby);
+		return getDocumentsData<Lobby>(collection);
+	}
+
+	private static getCollectionRef(
+		path: string
+	): FirebaseFirestore.CollectionReference {
+		return this.firestore.collection(path);
+	}
+
+	private static getDocumentRef(
+		path: string,
+		documentId: string
+	): FirebaseFirestore.DocumentReference {
+		return this.firestore.collection(path).doc(documentId);
+	}
+
+	private static async getDocumentsRef(
+		path: string
+	): Promise<FirebaseFirestore.DocumentReference[]> {
+		return this.firestore.collection(path).listDocuments();
 	}
 }

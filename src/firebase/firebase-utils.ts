@@ -8,6 +8,7 @@ export function collectionAdd(
 		...data,
 	});
 }
+
 export function documentSet(
 	documentRef: FirebaseFirestore.DocumentReference,
 	data = {}
@@ -29,16 +30,17 @@ export function documentUpdate(
 	});
 }
 
-export async function getDocuments(
-	collection: FirebaseFirestore.DocumentReference[]
-): Promise<FirebaseFirestore.DocumentData[]> {
-	return Promise.all(
-		collection
-			.map(docRef => docRef.get())
-			.filter(async snapshot => (await snapshot).exists)
-			.map(
-				async snapshot =>
-					<FirebaseFirestore.DocumentData>(await snapshot).data()
-			)
-	);
+export async function getDocumentData<T>(
+	document: FirebaseFirestore.DocumentReference
+): Promise<T | undefined> {
+	return document.get().then(snapshot => snapshot.data() as T | undefined);
+}
+
+export async function getDocumentsData<T>(
+	documents: FirebaseFirestore.DocumentReference[],
+	filterUndefined = true
+): Promise<(T | undefined)[]> {
+	return (
+		await Promise.all(documents.map(async doc => getDocumentData<T>(doc)))
+	).filter(data => !filterUndefined || data !== undefined);
 }

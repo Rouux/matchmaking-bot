@@ -20,7 +20,7 @@ export class Lobby {
 
 	public readonly description: string;
 
-	public documentId: string;
+	public documentId = ``;
 
 	public channels: LobbyChannels;
 
