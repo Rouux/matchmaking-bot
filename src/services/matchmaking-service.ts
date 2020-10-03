@@ -13,7 +13,7 @@ export class MatchmakingService {
 		});
 		const lobbies = await FirebaseService.getLobbiesByLocale(locale);
 
-		return lobbies.filter(lobby => lobby.name === name);
+		return lobbies.filter((lobby) => lobby.name === name);
 	}
 
 	public async createLobby(options: LobbyOptions): Promise<Lobby | undefined> {
@@ -30,10 +30,7 @@ export class MatchmakingService {
 		return lobby;
 	}
 
-	public async deleteLobby(
-		locale: string,
-		id: string,
-	): Promise<Lobby | undefined> {
+	public async deleteLobby(locale: string, id: string): Promise<Lobby | undefined> {
 		const lobby = await FirebaseService.getLobbyByLocaleAndId(locale, id);
 		if (!lobby) return undefined;
 		const { client } = DiscordClientService.INSTANCE;
@@ -43,6 +40,20 @@ export class MatchmakingService {
 		await (await client.channels.fetch(textChannel)).delete();
 		await (await client.channels.fetch(categoryChannel)).delete();
 		return FirebaseService.deleteLobby(lobby);
+	}
+
+	public async playerJoinLobby(locale: string, id: string): Promise<Lobby | undefined> {
+		const lobby = await FirebaseService.getLobbyByLocaleAndId(locale, id);
+		if (!lobby) return undefined;
+		lobby.players += 1;
+		return FirebaseService.updateLobby(lobby);
+	}
+
+	public async playerLeftLobby(locale: string, id: string): Promise<Lobby | undefined> {
+		const lobby = await FirebaseService.getLobbyByLocaleAndId(locale, id);
+		if (!lobby) return undefined;
+		lobby.players -= 1;
+		return FirebaseService.updateLobby(lobby);
 	}
 
 	private async getAvailableGuild(): Promise<Guild | undefined> {

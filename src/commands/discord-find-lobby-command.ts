@@ -10,15 +10,10 @@ export class DiscordFindLobbyCommand extends MatchmakingCommand {
 		});
 	}
 
-	protected async handleCommand(
-		message: Message,
-		args: string[],
-	): Promise<Message> {
+	protected async handleCommand(message: Message, args: string[]): Promise<Message> {
 		const splitChar = this.autoDetectSplitCharacter(args);
 		if (!splitChar)
-			return this.sendUsageError(
-				message, this, `The split character was not found !`,
-			);
+			return this.sendUsageError(message, this, `The split character was not found !`);
 		const formatedArgs = this.splitArguments(args, splitChar, 2);
 		const result = await this._request(formatedArgs);
 		return message.channel.send(result);
@@ -35,15 +30,16 @@ export class DiscordFindLobbyCommand extends MatchmakingCommand {
 		});
 		const lobbiesDisplayList = this._lobbiesDisplay(lobbies);
 		if (!lobbiesDisplayList || lobbiesDisplayList.length === 0)
-			return `No lobby were found with the name "${name}" :(`;
+			return `No lobby was found for "${name}" :(`;
 		return `\`\`\`\n${lobbiesDisplayList}\`\`\``;
 	}
 
 	private _lobbiesDisplay(lobbies: Lobby[]) {
 		return lobbies
 			.map(
-				lobby =>
-					`[${lobby.locale}] - (${lobby.size}) - ${lobby.name}\n\t\t${lobby.description}`,
+				(lobby) =>
+					`[${lobby.locale}] - (${lobby.players}/${lobby.size}) - ${lobby.name}` +
+					`\n\t${lobby.description}`,
 			)
 			.join(`\n`);
 	}

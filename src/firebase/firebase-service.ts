@@ -37,8 +37,9 @@ export class FirebaseService {
 	}
 
 	public static async updateLobby(lobby: Lobby): Promise<Lobby> {
+		const { locale, documentId } = lobby;
 		await documentUpdate(
-			this.getDocumentRef(`lobbies/${lobby.locale}/active`, lobby.documentId), lobby,
+			this.getDocumentRef(`lobbies/${locale}/active`, documentId), lobby,
 		);
 		return lobby;
 	}

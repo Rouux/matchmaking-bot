@@ -1,21 +1,27 @@
-import { VoiceChannel } from 'discord.js';
+import { GuildMember, VoiceChannel } from "discord.js";
 import { MatchmakingEvent } from "../classes/matchmaking-event";
 import { DiscordClient } from "../core/discord/classes/discord-client";
 import { LoggerService } from "../core/utils/logger/logger-service";
 
-export class VoiceStateUpdateEvent extends MatchmakingEvent {
+export class LeaveVoiceChannelEvent extends MatchmakingEvent {
 	protected async assignEventsToClient(client: DiscordClient): Promise<void> {
-		client.on(`leaveVoiceChannel`, (voiceChannel, member) => {
-			LoggerService.INSTANCE.info({
-				context: `Event - Leave Voice Channel`,
-				message: `${member.user.tag} left the channel ${voiceChannel.name} !`,
-			});
+		client.on(`leaveVoiceChannel`, async (voiceChannel, member) => {
+			this._logDebugUserLeft(member, voiceChannel);
 			const [locale, id] = voiceChannel.name.split(`-`);
 			if (!locale || !id) return;
-			if (this._isVoiceChannelEmpty(voiceChannel)) {
+			if (this._isChannelEmpty(voiceChannel)) {
 				this._logInfoEmptyChannel(voiceChannel);
-				this.matchmakingService.deleteLobby(locale, id);
+				await this.matchmakingService.deleteLobby(locale, id);
+			} else {
+				await this.matchmakingService.playerLeftLobby(locale, id);
 			}
+		});
+	}
+
+	private _logDebugUserLeft(member: GuildMember, voiceChannel: VoiceChannel) {
+		LoggerService.INSTANCE.debug({
+			context: `Event - Leave Voice Channel`,
+			message: `${member.user.tag} left the channel ${voiceChannel.name} !`,
 		});
 	}
 
@@ -26,7 +32,7 @@ export class VoiceStateUpdateEvent extends MatchmakingEvent {
 		});
 	}
 
-	private _isVoiceChannelEmpty(voiceChannel: VoiceChannel) {
-		return voiceChannel.members.size === 0;
+	private _isChannelEmpty(channel: VoiceChannel) {
+		return channel.members.size === 0;
 	}
 }

@@ -22,6 +22,8 @@ export class Lobby {
 
 	public documentId = ``;
 
+	public players = 0;
+
 	public channels!: LobbyChannels;
 
 	constructor(options: LobbyOptions) {
