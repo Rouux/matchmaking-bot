@@ -1,6 +1,6 @@
 import firebase, { ServiceAccount } from "firebase-admin";
-import { HostGuild } from "../classes/models/host-guild";
 import { Lobby } from "../classes/models/lobby";
+import { HostGuild } from "../classes/models/host-guild";
 import credentials from "./credential.json";
 import { CollectionReference, DocumentReference } from "./firebase-types";
 import {
@@ -47,6 +47,7 @@ export class FirebaseService {
 	public static async getLobbiesByLocale(locale = `FR`): Promise<Lobby[]> {
 		const collection = await this.getDocumentsRef(`lobbies/${locale}/active`);
 
+		// @ts-ignore
 		return getDocumentsData<Lobby>(collection);
 	}
 

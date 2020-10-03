@@ -22,7 +22,7 @@ export class Lobby {
 
 	public documentId = ``;
 
-	public channels: LobbyChannels;
+	public channels!: LobbyChannels;
 
 	constructor(options: LobbyOptions) {
 		this.name = options.name || ``;
