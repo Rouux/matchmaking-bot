@@ -26,7 +26,7 @@ export class MatchmakingService {
 		const lobby = await FirebaseService.createLobby(
 			new Lobby({ locale, name, size, description: description || `` })
 		);
-		lobby.channels = await this.createChannels(lobby, guild);
+		lobby.channels = await this.createChannels(guild);
 		FirebaseService.updateLobby(lobby);
 		LoggerService.INSTANCE.debug({
 			context: `MatchmakingService::createLobby`,
