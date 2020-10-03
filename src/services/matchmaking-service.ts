@@ -8,7 +8,7 @@ import { FirebaseService } from "../firebase/firebase-service";
 export class MatchmakingService {
 	public async findLobbies({ locale, name }: Partial<Lobby>): Promise<Lobby[]> {
 		LoggerService.INSTANCE.debug({
-			context: `MatchmakingService::findLobbiesByLocalAndName`,
+			context: `MatchmakingService::findLobbies`,
 			message: `locale: ${locale}, name: ${name}`,
 		});
 		const lobbies = await FirebaseService.getLobbiesByLocale(locale);
@@ -39,6 +39,10 @@ export class MatchmakingService {
 		await (await client.channels.fetch(voiceChannel)).delete();
 		await (await client.channels.fetch(textChannel)).delete();
 		await (await client.channels.fetch(categoryChannel)).delete();
+		LoggerService.INSTANCE.debug({
+			context: `MatchmakingService::createLobby`,
+			message: `Lobby succesfully deleted @${id}`,
+		});
 		return FirebaseService.deleteLobby(lobby);
 	}
 

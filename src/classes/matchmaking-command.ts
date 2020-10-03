@@ -26,7 +26,8 @@ export abstract class MatchmakingCommand extends DiscordCommand {
 		source: string[],
 		indexToCheckFor = 1,
 	): string | undefined {
-		return MatchmakingCommand;
-.SPLIT_CHARACTERS.find((char) => source[indexToCheckFor] === char);
+		return MatchmakingCommand.SPLIT_CHARACTERS.find(
+			(char) => source[indexToCheckFor] === char,
+		);
 	}
 }
