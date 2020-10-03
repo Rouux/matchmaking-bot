@@ -24,7 +24,7 @@ export class FirebaseService {
 	}
 
 	public static async createLobby(lobby: Lobby): Promise<Lobby> {
-		collectionAdd(
+		await collectionAdd(
 			this.getCollectionRef(`lobbies/${lobby.locale}/active`),
 			lobby
 		)

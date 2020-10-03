@@ -1,7 +1,8 @@
-import { CategoryChannel, Guild, TextChannel, VoiceChannel } from "discord.js";
+import { Guild } from "discord.js";
+import { buildLobby } from "../functions/build-lobby";
 import { DiscordClientService } from "../core/discord/services/discord-client-service";
 import { LoggerService } from "../core/utils/logger/logger-service";
-import { Lobby, LobbyChannels } from "../classes/models/lobby";
+import { Lobby, LobbyOptions } from "../classes/models/lobby";
 import { FirebaseService } from "../firebase/firebase-service";
 
 export class MatchmakingService {
@@ -15,18 +16,12 @@ export class MatchmakingService {
 		return lobbies.filter(lobby => lobby.name === name);
 	}
 
-	public async createLobby(
-		locale: string,
-		name: string,
-		size: number,
-		description?: string
-	): Promise<Lobby | undefined> {
+	public async createLobby(options: LobbyOptions): Promise<Lobby | undefined> {
 		const guild = await this.getAvailableGuild();
 		if (!guild) return undefined;
 		const lobby = await FirebaseService.createLobby(
-			new Lobby({ locale, name, size, description: description || `` })
+			await buildLobby(options, guild)
 		);
-		lobby.channels = await this.createChannels(guild);
 		FirebaseService.updateLobby(lobby);
 		LoggerService.INSTANCE.debug({
 			context: `MatchmakingService::createLobby`,
@@ -42,53 +37,5 @@ export class MatchmakingService {
 			hostGuild.guildId
 		);
 		return guild;
-	}
-
-	private async createChannels(guild: Guild): Promise<LobbyChannels> {
-		const id = Date.now();
-		const categoryChannel = await this.createCategoryChannel(guild, id);
-		const textChannel = (
-			await this.createTextChannel(guild, id, categoryChannel)
-		).id;
-		const voiceChannel = (
-			await this.createVoiceChannel(guild, id, categoryChannel)
-		).id;
-		return {
-			categoryChannel: categoryChannel.id,
-			textChannel,
-			voiceChannel,
-		};
-	}
-
-	private async createCategoryChannel(
-		guild: Guild,
-		id: number
-	): Promise<CategoryChannel> {
-		return guild.channels.create(`Category-${id}`, {
-			type: `category`,
-			position: 999,
-		});
-	}
-
-	private async createTextChannel(
-		guild: Guild,
-		id: number,
-		parent: CategoryChannel
-	): Promise<TextChannel> {
-		return guild.channels.create(`Text-${id}`, {
-			type: `text`,
-			parent,
-		});
-	}
-
-	private async createVoiceChannel(
-		guild: Guild,
-		id: number,
-		parent: CategoryChannel
-	): Promise<VoiceChannel> {
-		return guild.channels.create(`Voice-${id}`, {
-			type: `voice`,
-			parent,
-		});
 	}
 }
