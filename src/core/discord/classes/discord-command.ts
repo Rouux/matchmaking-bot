@@ -70,19 +70,18 @@ export abstract class DiscordCommand {
 		return Utils.removeElementsFromArray(args, index, supplementaryElements);
 	}
 
-	protected usageError(command: DiscordCommand, details?: string): string {
-		let usageMessage = `There was an error using ${command.name}`;
+	protected usageError(details?: string): string {
+		let usageMessage = `There was an error using ${this.name}`;
 		if (details) usageMessage += ` : ${details}`;
-		usageMessage += `\nThe correct usage would be : \n\t${command.data.usage}`;
+		usageMessage += `\nThe correct usage would be : \n\t${this.data.usage}`;
 		return usageMessage;
 	}
 
 	protected async sendUsageError(
 		message: Message,
-		command: DiscordCommand,
 		details?: string,
 	): Promise<Message> {
-		const usageMessage = this.usageError(command, details);
+		const usageMessage = this.usageError(details);
 		return message.channel.send(usageMessage);
 	}
 

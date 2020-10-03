@@ -17,7 +17,7 @@ export class DiscordFindLobbyCommand extends MatchmakingCommand {
 	protected async handleCommand(message: Message, args: string[]): Promise<Message> {
 		const splitChar = this.autoDetectSplitCharacter(args);
 		if (!splitChar) {
-			return this.sendUsageError(message, this, `The split character was not found !`);
+			return this.sendUsageError(message, `The split character was not found !`);
 		}
 		const [locale, name] = this.splitArguments(args, splitChar, 2);
 		const lobbies = await this._getLobbies(message, locale, name);
@@ -93,7 +93,7 @@ export class DiscordFindLobbyCommand extends MatchmakingCommand {
 	): Promise<Lobby[]> {
 		locale = locale.toUpperCase();
 		if (!LOCALES.includes(locale.toUpperCase())) {
-			this.sendUsageError(message, this, `The selected locale is WRONG`);
+			this.sendUsageError(message, `The selected locale is WRONG`);
 			return [];
 		}
 
