@@ -38,11 +38,11 @@ export class DiscordCommandRepositoryBuilder extends Repository<
 		const commandUsingCallname = this._getCommand(callnames);
 		if (!commandUsingCallname) return true;
 		const callname = commandUsingCallname.callnames.find(cname =>
-			callnames.includes(cname)
+			callnames.includes(cname),
 		);
 		throw new Error(
 			oneLine`The registry already contains the command
-				[${commandUsingCallname.name}] using the same callname '${callname}'`
+				[${commandUsingCallname.name}] using the same callname '${callname}'`,
 		);
 	}
 

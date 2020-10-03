@@ -17,7 +17,7 @@ export class DiscordUtils {
 		...emojis: EmojiResolvable[]
 	): Promise<Message> {
 		return Promise.all(emojis.map(emoji => message.react(emoji))).then(
-			() => message
+			() => message,
 		);
 	}
 

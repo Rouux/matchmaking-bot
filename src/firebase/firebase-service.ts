@@ -6,6 +6,7 @@ import { CollectionReference, DocumentReference } from "./firebase-types";
 import {
 	collectionAdd,
 	documentUpdate,
+	getDocumentData,
 	getDocumentsData,
 } from "./firebase-utils";
 
@@ -25,8 +26,7 @@ export class FirebaseService {
 
 	public static async createLobby(lobby: Lobby): Promise<Lobby> {
 		await collectionAdd(
-			this.getCollectionRef(`lobbies/${lobby.locale}/active`),
-			lobby
+			this.getCollectionRef(`lobbies/${lobby.locale}/active`), lobby,
 		)
 			.then(docRef => docRef.get())
 			.then(snapshot => snapshot.id)
@@ -37,9 +37,8 @@ export class FirebaseService {
 	}
 
 	public static async updateLobby(lobby: Lobby): Promise<Lobby> {
-		documentUpdate(
-			this.getDocumentRef(`lobbies/${lobby.locale}/active`, lobby.documentId),
-			lobby
+		await documentUpdate(
+			this.getDocumentRef(`lobbies/${lobby.locale}/active`, lobby.documentId), lobby,
 		);
 		return lobby;
 	}
@@ -51,19 +50,34 @@ export class FirebaseService {
 		return getDocumentsData<Lobby>(collection);
 	}
 
+	public static async getLobbyByLocaleAndId(
+		locale: string,
+		id: string,
+	): Promise<Lobby | undefined> {
+		const docRef = this.getDocumentRef(`lobbies/${locale}/active`, id);
+		return getDocumentData<Lobby>(docRef);
+	}
+
+	public static async deleteLobby(lobby: Lobby): Promise<Lobby> {
+		const { locale, documentId } = lobby;
+		const docRef = this.getDocumentRef(`lobbies/${locale}/active`, documentId);
+		docRef.delete();
+		return lobby;
+	}
+
 	private static getCollectionRef(path: string): CollectionReference {
 		return this.firestore.collection(path);
 	}
 
 	private static getDocumentRef(
 		path: string,
-		documentId: string
+		documentId: string,
 	): DocumentReference {
 		return this.firestore.collection(path).doc(documentId);
 	}
 
 	private static async getDocumentsRef(
-		path: string
+		path: string,
 	): Promise<DocumentReference[]> {
 		return this.firestore.collection(path).listDocuments();
 	}

@@ -12,14 +12,12 @@ export class DiscordFindLobbyCommand extends MatchmakingCommand {
 
 	protected async handleCommand(
 		message: Message,
-		args: string[]
+		args: string[],
 	): Promise<Message> {
 		const splitChar = this.autoDetectSplitCharacter(args);
 		if (!splitChar)
 			return this.sendUsageError(
-				message,
-				this,
-				`The split character was not found !`
+				message, this, `The split character was not found !`,
 			);
 		const formatedArgs = this.splitArguments(args, splitChar, 2);
 		const result = await this._request(formatedArgs);
@@ -45,7 +43,7 @@ export class DiscordFindLobbyCommand extends MatchmakingCommand {
 		return lobbies
 			.map(
 				lobby =>
-					`[${lobby.locale}] - (${lobby.size}) - ${lobby.name}\n\t\t${lobby.description}`
+					`[${lobby.locale}] - (${lobby.size}) - ${lobby.name}\n\t\t${lobby.description}`,
 			)
 			.join(`\n`);
 	}

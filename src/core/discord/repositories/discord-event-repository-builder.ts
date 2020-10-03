@@ -17,7 +17,7 @@ export class DiscordEventRepositoryBuilder extends Repository<DiscordEvent> {
 	}
 
 	public async _registerEachDiscordEvent(
-		discordEvents: DiscordEvent[]
+		discordEvents: DiscordEvent[],
 	): Promise<void> {
 		return new Promise((resolve, reject) => {
 			discordEvents.forEach(discordEvent => {
@@ -28,7 +28,7 @@ export class DiscordEventRepositoryBuilder extends Repository<DiscordEvent> {
 	}
 
 	public async _registerDiscordEvent(
-		discordEvent: DiscordEvent
+		discordEvent: DiscordEvent,
 	): Promise<void> {
 		if (!this._client)
 			throw new Error(`The Client in the respository is undefined !`);

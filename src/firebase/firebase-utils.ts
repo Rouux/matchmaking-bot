@@ -6,7 +6,7 @@ import {
 
 export function collectionAdd(
 	collectionRef: CollectionReference,
-	data = {}
+	data = {},
 ): Promise<DocumentReference> {
 	return collectionRef.add({
 		createdAt: Date.now(),
@@ -17,7 +17,7 @@ export function collectionAdd(
 
 export function documentSet(
 	documentRef: DocumentReference,
-	data = {}
+	data = {},
 ): Promise<WriteResult> {
 	return documentRef.set({
 		createdAt: Date.now(),
@@ -28,7 +28,7 @@ export function documentSet(
 
 export function documentUpdate(
 	documentRef: DocumentReference,
-	data = {}
+	data = {},
 ): Promise<WriteResult> {
 	return documentRef.update({
 		lastUpdatedAt: Date.now(),
@@ -37,14 +37,14 @@ export function documentUpdate(
 }
 
 export async function getDocumentData<T>(
-	document: DocumentReference
+	document: DocumentReference,
 ): Promise<T | undefined> {
 	return document.get().then(snapshot => snapshot.data() as T | undefined);
 }
 
 export async function getDocumentsData<T>(
 	documents: DocumentReference[],
-	filterUndefined = true
+	filterUndefined = true,
 ): Promise<(T | undefined)[]> {
 	return (
 		await Promise.all(documents.map(async doc => getDocumentData<T>(doc)))

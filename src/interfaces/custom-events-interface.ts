@@ -1,6 +1,6 @@
-import { ClientEvents, Message } from "discord.js";
-import { DiscordCommand } from "../discord/classes/discord-command";
-import { CommandArgument } from "../discord/interfaces/discord-command-data-interface";
+import { ClientEvents, GuildMember, Message, VoiceChannel } from "discord.js";
+import { DiscordCommand } from "../core/discord/classes/discord-command";
+import { CommandArgument } from "../core/discord/interfaces/discord-command-data-interface";
 
 export interface CustomEvents extends ClientEvents {
 	unknownCommand: [Message];
@@ -10,4 +10,6 @@ export interface CustomEvents extends ClientEvents {
 	commandMandatoryArgumentMissing: [Message, CommandArgument, DiscordCommand];
 	commandWrongArgumentUsage: [Message, string | undefined];
 	commandError: [DiscordCommand, Message, Error];
+	joinVoiceChannel: [VoiceChannel, GuildMember];
+	leaveVoiceChannel: [VoiceChannel, GuildMember];
 }

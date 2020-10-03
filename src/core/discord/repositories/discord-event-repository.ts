@@ -6,7 +6,7 @@ export class DiscordEventRepository extends Repository<DiscordEvent> {
 	private _builder = new DiscordEventRepositoryBuilder();
 
 	public static async build(
-		eventsPath: string
+		eventsPath: string,
 	): Promise<DiscordEventRepository> {
 		const builder = new DiscordEventRepositoryBuilder();
 		return builder.build(eventsPath).then(repository => {

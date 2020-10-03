@@ -22,7 +22,7 @@ export class DiscordEventService {
 			})
 			.then(() => this._repository.registerDiscordEvent(new DiscordLogEvent()))
 			.then(() =>
-				this._repository.registerDiscordEvent(new DiscordCommandErrorEvent())
+				this._repository.registerDiscordEvent(new DiscordCommandErrorEvent()),
 			);
 	}
 

@@ -30,7 +30,7 @@ export abstract class Repository<T> {
 
 	public byTypeFirst<U extends T>(
 		clazz: new (...args: unknown[]) => U,
-		orElse?: U
+		orElse?: U,
 	): T | undefined {
 		const result = this.all().find(value => {
 			return value instanceof clazz;

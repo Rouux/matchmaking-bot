@@ -32,10 +32,10 @@ export class DiscordCommandErrorEvent extends DiscordEvent {
 	private _sendChannel(
 		message: Message,
 		command: DiscordCommand,
-		owner?: User
+		owner?: User,
 	) {
 		message.channel.send(
-			this._makeChannelEmbedError(command.command, owner ? owner.id : undefined)
+			this._makeChannelEmbedError(command.command, owner ? owner.id : undefined),
 		);
 	}
 
@@ -43,18 +43,18 @@ export class DiscordCommandErrorEvent extends DiscordEvent {
 		owner: User,
 		command: DiscordCommand,
 		message: Message,
-		error: Error
+		error: Error,
 	) {
 		if (owner) {
 			owner.send(
-				this._makeOwnerEmbedError(command.command, message.content, error)
+				this._makeOwnerEmbedError(command.command, message.content, error),
 			);
 		}
 	}
 
 	public _makeChannelEmbedError(
 		command: string,
-		ownerId?: string
+		ownerId?: string,
 	): DiscordEmbed {
 		const embed = new DiscordEmbed();
 		embed
@@ -69,7 +69,7 @@ export class DiscordCommandErrorEvent extends DiscordEvent {
 	public _makeOwnerEmbedError(
 		command: string,
 		message: string,
-		error?: Error
+		error?: Error,
 	): DiscordEmbed {
 		const embed = new DiscordEmbed();
 		embed

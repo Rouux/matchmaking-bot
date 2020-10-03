@@ -17,6 +17,8 @@
 	},
 	"plugins": ["@typescript-eslint", "prettier"],
 	"rules": {
+		"linebreak-style": 0,
+		"indent": ["error", "tab"],
 		"import/no-unresolved": "off",
 		"import/extensions": "off",
 		"import/prefer-default-export": "off",
@@ -26,6 +28,23 @@
 		"max-classes-per-file": "off",
 		"no-param-reassign": "off",
 		"@typescript-eslint/ban-ts-comment": "off",
-		"no-use-before-define": "off"
+		"no-use-before-define": "off",
+		"function-call-argument-newline": ["error", "never"],
+		"comma-dangle": ["error", "always-multiline"],
+		"prettier/prettier": "off",
+		"max-len": [
+			"warn",
+			{
+				"code": 90,
+				"ignoreUrls": true,
+				"ignoreStrings": true,
+				"ignoreTemplateLiterals": true,
+				"ignoreRegExpLiterals": true
+			}
+		],
+		"max-depth": ["error", 3],
+		"max-lines-per-function": ["error", { "max": 20, "skipBlankLines": true }],
+		"semi": ["error", "always"],
+		"prefer-destructuring": "warn"
 	}
 }

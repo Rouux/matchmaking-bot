@@ -10,7 +10,7 @@ export class Utils {
 	public static removeElementsFromArray<T extends unknown>(
 		args: T[],
 		start: number,
-		count = 1
+		count = 1,
 	): T[] {
 		return [...args.slice(0, start), ...args.slice(start + 1 + count)];
 	}

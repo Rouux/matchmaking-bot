@@ -1,5 +1,5 @@
 import { Client } from "discord.js";
-import { CustomEvents } from "../../interfaces/custom-events-interface";
+import { CustomEvents } from "../../../interfaces/custom-events-interface";
 
 /**
  * Its main purpose is to pur-override discord.js#Client declarations.

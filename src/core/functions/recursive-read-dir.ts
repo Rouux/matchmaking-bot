@@ -2,7 +2,7 @@ import fs from "fs";
 
 export function recursiveReadDir(
 	dirPath: string,
-	filter = `^((?!spec).)*.ts`
+	filter = `^((?!spec).)*.ts`,
 ): string[] {
 	if (!fs.existsSync(dirPath))
 		throw new Error(`The path '${dirPath}' is not valid`);

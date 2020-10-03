@@ -8,19 +8,18 @@ export class DiscordCreateLobbyCommand extends MatchmakingCommand {
 		super(`create`, {
 			aliases: [`cl`],
 			description: `Create a lobby`,
+			cooldown: 10,
 		});
 	}
 
 	protected async handleCommand(
 		message: Message,
-		args: string[]
+		args: string[],
 	): Promise<Message> {
 		const splitChar = this.autoDetectSplitCharacter(args);
 		if (!splitChar)
 			return this.sendUsageError(
-				message,
-				this,
-				`The split character was not found !`
+				message, this, `The split character was not found !`,
 			);
 		const formatedArgs = this.splitArguments(args, splitChar, 4);
 		const result = await this._request(formatedArgs);

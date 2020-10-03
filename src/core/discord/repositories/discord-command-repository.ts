@@ -6,7 +6,7 @@ import { DiscordCommandRepositoryBuilder } from "./discord-command-repository-bu
 
 export class DiscordCommandRepository extends Repository<DiscordCommand> {
 	public static async build(
-		commandsPath: string
+		commandsPath: string,
 	): Promise<DiscordCommandRepository> {
 		return new DiscordCommandRepositoryBuilder().build(commandsPath);
 	}
@@ -23,7 +23,7 @@ export class DiscordCommandRepository extends Repository<DiscordCommand> {
 
 	public isCommandOnCooldown(
 		command: DiscordCommand,
-		message: Message
+		message: Message,
 	): boolean {
 		const timestamps = this._cooldowns.get(command.name);
 		if (!timestamps) return false;

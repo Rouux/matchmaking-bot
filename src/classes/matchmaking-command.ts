@@ -13,7 +13,7 @@ export abstract class MatchmakingCommand extends DiscordCommand {
 	protected splitArguments(
 		source: string[],
 		splitChar: string,
-		max = 0
+		max = 0,
 	): string[] {
 		const result: string[] = [``];
 		source.forEach(value => {
@@ -27,7 +27,7 @@ export abstract class MatchmakingCommand extends DiscordCommand {
 
 	protected autoDetectSplitCharacter(
 		source: string[],
-		indexToCheckFor = 1
+		indexToCheckFor = 1,
 	): string | undefined {
 		return SPLIT_CHARACTERS.find(char => source[indexToCheckFor] === char);
 	}

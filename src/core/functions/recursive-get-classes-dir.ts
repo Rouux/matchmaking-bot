@@ -2,7 +2,7 @@
 import { recursiveReadDir } from "./recursive-read-dir";
 
 export async function getInstancesFromFolder<T>(
-	folderPath: string
+	folderPath: string,
 ): Promise<T[]> {
 	const files = recursiveReadDir(folderPath);
 	if (files.length === 0) return [];

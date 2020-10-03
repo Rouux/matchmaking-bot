@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { CustomEvents } from "../../interfaces/custom-events-interface";
+import { CustomEvents } from "../../../interfaces/custom-events-interface";
 import { LoggerService } from "../../utils/logger/logger-service";
 import { DiscordClientService } from "./discord-client-service";
 
@@ -26,23 +26,34 @@ export class DiscordEventEmitterService {
 	public async emit(event: string, ...args: unknown[]): Promise<void> {
 		const { client } = DiscordClientService.INSTANCE;
 		if (!client) {
-			LoggerService.INSTANCE.error({
-				context: `DiscordEventEmitterService`,
-				message: `Got an undefined client while trying to emit '${event}'`,
-			});
-			return;
+			this._logErrorUndefinedClient(event);
 		}
 		// Returns true if the event had listeners, false otherwise.
 		if (client.emit(event, ...args)) {
-			LoggerService.INSTANCE.debug({
-				context: `DiscordEventEmitterService`,
-				message: `The event '${event}' was emitted`,
-			});
+			this._logDebugEventEmitted(event);
 		} else {
-			LoggerService.INSTANCE.warn({
-				context: `DiscordEventEmitterService`,
-				message: `The event '${event}' was emitted but has no listener`,
-			});
+			this._logWarnEmittedButNoListener(event);
 		}
+	}
+
+	private _logWarnEmittedButNoListener(event: string): void {
+		LoggerService.INSTANCE.warn({
+			context: `DiscordEventEmitterService`,
+			message: `The event '${event}' was emitted but has no listener`,
+		});
+	}
+
+	private _logDebugEventEmitted(event: string): void {
+		LoggerService.INSTANCE.debug({
+			context: `DiscordEventEmitterService`,
+			message: `The event '${event}' was emitted`,
+		});
+	}
+
+	private _logErrorUndefinedClient(event: string): void {
+		LoggerService.INSTANCE.error({
+			context: `DiscordEventEmitterService`,
+			message: `Got an undefined client while trying to emit '${event}'`,
+		});
 	}
 }

@@ -63,7 +63,7 @@ export abstract class DiscordCommand {
 	protected removeArgument(
 		argument: string,
 		args: string[],
-		supplementaryElements?: number
+		supplementaryElements?: number,
 	): string[] {
 		const index = args.indexOf(argument);
 		if (index === -1) return args;
@@ -80,7 +80,7 @@ export abstract class DiscordCommand {
 	protected async sendUsageError(
 		message: Message,
 		command: DiscordCommand,
-		details?: string
+		details?: string,
 	): Promise<Message> {
 		const usageMessage = this.usageError(command, details);
 		return message.channel.send(usageMessage);
@@ -90,11 +90,11 @@ export abstract class DiscordCommand {
 		notifyChannel: User | TextChannel | DMChannel,
 		timeout: number,
 		content: string,
-		options?: NoticeOptions
+		options?: NoticeOptions,
 	): Promise<void> {
 		setTimeout(() => {
 			notifyChannel.send(
-				`You were asked to be notified after ${timeout} seconds about : \n${content}`
+				`You were asked to be notified after ${timeout} seconds about : \n${content}`,
 			);
 		}, timeout * 1000);
 		if (options && options.noticeChannel) {
@@ -102,16 +102,24 @@ export abstract class DiscordCommand {
 				noticeChannel,
 				noticeTimeout = options.noticeTimeout || 3,
 			} = options;
-			await noticeChannel
-				.send(
-					`You will be notified in ${timeout} second(s).` +
-						`\n(This message will delete itself in a few seconds)`
-				)
-				.then(notificationNotice => {
-					if (noticeTimeout > 0)
-						notificationNotice.delete({ timeout: noticeTimeout * 1000 });
-				});
+			await this._notifyChannel(noticeChannel, timeout, noticeTimeout);
 		}
+	}
+
+	private async _notifyChannel(
+		noticeChannel: TextChannel | DMChannel | NewsChannel,
+		timeout: number,
+		noticeTimeout: number,
+	): Promise<void> {
+		return noticeChannel
+			.send(
+				`You will be notified in ${timeout} second(s).` +
+					`\n(This message will delete itself in a few seconds)`,
+			)
+			.then(notificationNotice => {
+				if (noticeTimeout > 0)
+					notificationNotice.delete({ timeout: noticeTimeout * 1000 });
+			});
 	}
 
 	protected abstract async handleCommand(
@@ -152,14 +160,11 @@ export abstract class DiscordCommand {
 
 	private _lackMandatoryArgument(args: string[], message: Message) {
 		const missingMandatoryArgument = this._getUnfullfiledMandatoryArgument(
-			...args
+			...args,
 		);
 		if (missingMandatoryArgument !== undefined) {
 			this._commandService._emit(
-				`commandMandatoryArgumentMissing`,
-				message,
-				missingMandatoryArgument,
-				this
+				`commandMandatoryArgumentMissing`, message, missingMandatoryArgument, this,
 			);
 			return true;
 		}

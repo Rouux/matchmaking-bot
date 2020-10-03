@@ -10,7 +10,7 @@ export class DiscordClient extends DiscordBaseClient {
 	}
 
 	public getOption<K extends keyof IDiscordClientOptions>(
-		key: K
+		key: K,
 	): IDiscordClientOptions[K] {
 		return this._options[key];
 	}

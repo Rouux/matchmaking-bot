@@ -96,8 +96,8 @@ export class LoggerService {
 
 		return chalkWholeLine(
 			`${chalkTimestamp(this._getTimestamp())} - [${chalkHeader(
-				header
-			)}][${chalkContext(options.context)}] - ${chalkMessage(options.message)}`
+				header,
+			)}][${chalkContext(options.context)}] - ${chalkMessage(options.message)}`,
 		);
 	}
 
