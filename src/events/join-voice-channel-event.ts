@@ -8,7 +8,7 @@ export class JoinVoiceChannelEvent extends MatchmakingEvent {
 		client.on(`joinVoiceChannel`, async (voiceChannel, member) => {
 			this._logDebugUserJoined(member, voiceChannel);
 			const [locale, id] = voiceChannel.name.split(`-`);
-			if (locale && id) await this.matchmakingService.playerJoinLobby(locale, id);
+			if (locale && id) await this.matchmakingService.playerJoinLobby(id);
 		});
 	}
 

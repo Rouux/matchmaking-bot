@@ -107,6 +107,6 @@ export class DiscordFindLobbyCommand extends MatchmakingCommand {
 			return [];
 		}
 
-		return this.matchmakingService.findLobbies({ locale, name });
+		return this.matchmakingService.findLobbies(locale, name);
 	}
 }

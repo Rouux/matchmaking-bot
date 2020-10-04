@@ -2,9 +2,11 @@
 /* eslint-disable no-console */
 import dotenv, { DotenvParseOutput } from "dotenv";
 import path from "path";
+import { Lobby } from "./classes/models/lobby";
 import { CoreService } from "./core/core-service";
 import { DiscordCommandService } from "./core/discord/services/discord-command-service";
 import { DiscordEventService } from "./core/discord/services/discord-event-service";
+import { FirebaseService } from "./firebase/firebase-service";
 
 async function main(config: DotenvParseOutput): Promise<void> {
 	await CoreService.INSTANCE.start({
@@ -21,12 +23,12 @@ async function main(config: DotenvParseOutput): Promise<void> {
 function printEventsAndCommands() {
 	const events = DiscordEventService.INSTANCE.repository
 		.all()
-		.map(value => value.constructor.name);
+		.map((value) => value.constructor.name);
 	console.log(`events : [${events.join(`, `)}]`);
 
 	const commands = DiscordCommandService.INSTANCE.repository
 		.all()
-		.map(value => value.constructor.name);
+		.map((value) => value.constructor.name);
 	console.log(`commands : [${commands.join(`, `)}]`);
 }
 
@@ -41,3 +43,21 @@ if (!dotenvConfig.parsed || Object.keys(dotenvConfig.parsed).length === 0) {
 }
 
 main(dotenvConfig.parsed);
+
+// test();
+
+// async function test() {
+// 	const lobby = await FirebaseService.createLobby(
+// 		new Lobby({
+// 			name: `Monster`,
+// 			description: `description`,
+// 			locale: `FR`,
+// 			size: 5,
+// 		}),
+// 	);
+// 	await FirebaseService.updateLobby(lobby);
+// 	const lobbies = await FirebaseService.getLobbies();
+// 	console.log(lobbies);
+// 	const result = await FirebaseService.getLobbiesByLocale(`FR`);
+// 	console.log(result);
+// }

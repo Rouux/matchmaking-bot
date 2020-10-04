@@ -14,10 +14,10 @@ export class MatchmakingService extends BaseDiscord {
 			message: `locale: ${locale}, documentId: ${documentId}`,
 		});
 
-		return FirebaseService.getLobbyByLocaleAndId(locale, documentId);
+		return FirebaseService.getLobby(documentId);
 	}
 
-	public async findLobbies({ locale, name }: Partial<Lobby>): Promise<Lobby[]> {
+	public async findLobbies(locale: string, name: string): Promise<Lobby[]> {
 		LoggerService.INSTANCE.debug({
 			context: `MatchmakingService::findLobbies`,
 			message: `locale: ${locale}, name: ${name}`,
@@ -65,8 +65,8 @@ export class MatchmakingService extends BaseDiscord {
 		});
 	}
 
-	public async deleteLobby(locale: string, id: string): Promise<Lobby | undefined> {
-		const lobby = await FirebaseService.getLobbyByLocaleAndId(locale, id);
+	public async deleteLobby(id: string): Promise<Lobby | undefined> {
+		const lobby = await FirebaseService.getLobby(id);
 		if (!lobby) return undefined;
 		await this._deleteRole(lobby);
 		await this._deleteChannels(lobby.channels);
@@ -93,15 +93,15 @@ export class MatchmakingService extends BaseDiscord {
 		await (await this.client.channels.fetch(categoryChannel)).delete();
 	}
 
-	public async playerJoinLobby(locale: string, id: string): Promise<Lobby | undefined> {
-		const lobby = await FirebaseService.getLobbyByLocaleAndId(locale, id);
+	public async playerJoinLobby(id: string): Promise<Lobby | undefined> {
+		const lobby = await FirebaseService.getLobby(id);
 		if (!lobby) return undefined;
 		lobby.players += 1;
 		return FirebaseService.updateLobby(lobby);
 	}
 
-	public async playerLeftLobby(locale: string, id: string): Promise<Lobby | undefined> {
-		const lobby = await FirebaseService.getLobbyByLocaleAndId(locale, id);
+	public async playerLeftLobby(id: string): Promise<Lobby | undefined> {
+		const lobby = await FirebaseService.getLobby(id);
 		if (!lobby) return undefined;
 		lobby.players -= 1;
 		return FirebaseService.updateLobby(lobby);

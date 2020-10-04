@@ -11,9 +11,9 @@ export class LeaveVoiceChannelEvent extends MatchmakingEvent {
 			if (!locale || !id) return;
 			if (this._isChannelEmpty(voiceChannel)) {
 				this._logInfoEmptyChannel(voiceChannel);
-				await this.matchmakingService.deleteLobby(locale, id);
+				await this.matchmakingService.deleteLobby(id);
 			} else {
-				await this.matchmakingService.playerLeftLobby(locale, id);
+				await this.matchmakingService.playerLeftLobby(id);
 			}
 		});
 	}
