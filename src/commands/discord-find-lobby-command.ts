@@ -1,5 +1,5 @@
-import { Message, VoiceChannel } from "discord.js";
 import _ from "lodash";
+import { Message, VoiceChannel } from "discord.js";
 import { Lobby } from "../classes/models/lobby";
 import { LOCALES } from "../utils/constants";
 import { MatchmakingCommand } from "../classes/matchmaking-command";
@@ -53,7 +53,6 @@ export class DiscordFindLobbyCommand extends MatchmakingCommand {
 			temporary: true,
 			maxAge: 60000,
 			maxUses: 2,
-			reason: lobby.documentId,
 		});
 		const { guild } = voiceChannel;
 		const member = await guild.members
