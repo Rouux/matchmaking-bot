@@ -1,4 +1,5 @@
 import { Message, TextChannel, DMChannel, User, NewsChannel } from "discord.js";
+import { BaseDiscord } from "../../base-discord";
 import { Utils } from "../../utils/utils";
 import {
 	CommandArgument,
@@ -18,7 +19,7 @@ type NoticeOptions = {
 	noticeTimeout?: number;
 };
 
-export abstract class DiscordCommand {
+export abstract class DiscordCommand extends BaseDiscord {
 	protected readonly _commandService: DiscordCommandService;
 
 	private readonly _collectedArguments: CommandArgument[] = [];
@@ -26,6 +27,7 @@ export abstract class DiscordCommand {
 	public readonly data: Readonly<DiscordCommandData>;
 
 	constructor(command: string, options: Partial<IDiscordCommandData>) {
+		super();
 		this._commandService = DiscordCommandService.INSTANCE;
 		this.data = {
 			name: command[0].toUpperCase() + command.slice(1),
@@ -45,10 +47,10 @@ export abstract class DiscordCommand {
 		if (this._lackMandatoryArgument(args, message)) return;
 
 		args
-			.filter(arg => arg.startsWith(`--`))
-			.map(arg => arg.slice(2)) // Remove the '--'
-			.filter(arg => this.data.arguments.map(cmd => cmd.name).includes(arg))
-			.forEach(arg => this._collectArgument(arg));
+			.filter((arg) => arg.startsWith(`--`))
+			.map((arg) => arg.slice(2)) // Remove the '--'
+			.filter((arg) => this.data.arguments.map((cmd) => cmd.name).includes(arg))
+			.forEach((arg) => this._collectArgument(arg));
 		await this.handleCommand(message, args);
 		this._commandService.repository.commandCalled(this, message);
 	}
@@ -77,10 +79,7 @@ export abstract class DiscordCommand {
 		return usageMessage;
 	}
 
-	protected async sendUsageError(
-		message: Message,
-		details?: string,
-	): Promise<Message> {
+	protected async sendUsageError(message: Message, details?: string): Promise<Message> {
 		const usageMessage = this.usageError(details);
 		return message.channel.send(usageMessage);
 	}
@@ -97,10 +96,7 @@ export abstract class DiscordCommand {
 			);
 		}, timeout * 1000);
 		if (options && options.noticeChannel) {
-			const {
-				noticeChannel,
-				noticeTimeout = options.noticeTimeout || 3,
-			} = options;
+			const { noticeChannel, noticeTimeout = options.noticeTimeout || 3 } = options;
 			await this._notifyChannel(noticeChannel, timeout, noticeTimeout);
 		}
 	}
@@ -115,7 +111,7 @@ export abstract class DiscordCommand {
 				`You will be notified in ${timeout} second(s).` +
 					`\n(This message will delete itself in a few seconds)`,
 			)
-			.then(notificationNotice => {
+			.then((notificationNotice) => {
 				if (noticeTimeout > 0)
 					notificationNotice.delete({ timeout: noticeTimeout * 1000 });
 			});
@@ -131,7 +127,7 @@ export abstract class DiscordCommand {
 	}
 
 	public getArgument(name: string): CommandArgument | undefined {
-		return this._collectedArguments.find(argument => argument.name === name);
+		return this._collectedArguments.find((argument) => argument.name === name);
 	}
 
 	public isGuildOnly(): boolean {
@@ -153,14 +149,12 @@ export abstract class DiscordCommand {
 	private _collectArgument(name: string) {
 		if (this.hasArgument(name)) return;
 
-		const argument = this.data.arguments.find(arg => arg.name === name);
+		const argument = this.data.arguments.find((arg) => arg.name === name);
 		if (argument) this._collectedArguments.push(argument);
 	}
 
 	private _lackMandatoryArgument(args: string[], message: Message) {
-		const missingMandatoryArgument = this._getUnfullfiledMandatoryArgument(
-			...args,
-		);
+		const missingMandatoryArgument = this._getUnfullfiledMandatoryArgument(...args);
 		if (missingMandatoryArgument !== undefined) {
 			this._commandService._emit(
 				`commandMandatoryArgumentMissing`, message, missingMandatoryArgument, this,
@@ -174,9 +168,9 @@ export abstract class DiscordCommand {
 		...args: string[]
 	): CommandArgument | undefined {
 		return this.data.arguments
-			.filter(argument => {
+			.filter((argument) => {
 				return argument.mandatory === true;
 			})
-			.find(argument => !args.includes(`--${argument.name}`));
+			.find((argument) => !args.includes(`--${argument.name}`));
 	}
 }

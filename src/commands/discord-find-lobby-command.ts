@@ -46,7 +46,7 @@ export class DiscordFindLobbyCommand extends MatchmakingCommand {
 	}
 
 	private async _sendInviteLink(message: Message, lobby: Lobby) {
-		const voiceChannel = (await message.client.channels.fetch(
+		const voiceChannel = (await this.client.channels.fetch(
 			lobby.channels.voiceChannel,
 		)) as VoiceChannel;
 		const invite = await voiceChannel.createInvite({

@@ -1,13 +1,12 @@
 import _ from "lodash";
 import { Guild, Role } from "discord.js";
-import { DiscordClient } from "src/core/discord/classes/discord-client";
 import { buildLobby, createChannels } from "../functions/build-lobby";
-import { DiscordClientService } from "../core/discord/services/discord-client-service";
 import { LoggerService } from "../core/utils/logger/logger-service";
 import { Lobby, LobbyChannels, LobbyOptions } from "../classes/models/lobby";
 import { FirebaseService } from "../firebase/firebase-service";
+import { BaseDiscord } from "../core/base-discord";
 
-export class MatchmakingService {
+export class MatchmakingService extends BaseDiscord {
 	public async findLobbies({ locale, name }: Partial<Lobby>): Promise<Lobby[]> {
 		LoggerService.INSTANCE.debug({
 			context: `MatchmakingService::findLobbies`,
@@ -25,7 +24,7 @@ export class MatchmakingService {
 			.then((lobby) => this._setServerContentOnLobby(lobby, guild))
 			.then((lobby) => FirebaseService.updateLobby(lobby))
 			.then((lobby) => {
-				LoggerService.INSTANCE.debug({
+				LoggerService.INSTANCE.info({
 					context: `MatchmakingService::createLobby`,
 					message: `Lobby succesfully created @${lobby.documentId}`,
 				});
@@ -59,29 +58,29 @@ export class MatchmakingService {
 	public async deleteLobby(locale: string, id: string): Promise<Lobby | undefined> {
 		const lobby = await FirebaseService.getLobbyByLocaleAndId(locale, id);
 		if (!lobby) return undefined;
-		const { client } = DiscordClientService.INSTANCE;
-		await this._deleteRole(client, lobby);
-		await this._deleteChannels(client, lobby.channels);
-		LoggerService.INSTANCE.debug({
-			context: `MatchmakingService::createLobby`,
+		await this._deleteRole(lobby);
+		await this._deleteChannels(lobby.channels);
+		LoggerService.INSTANCE.info({
+			context: `MatchmakingService::deleteLobby`,
 			message: `Lobby succesfully deleted @${id}`,
 		});
 		return FirebaseService.deleteLobby(lobby);
 	}
 
-	private async _deleteRole(client: DiscordClient, lobby: Lobby): Promise<void> {
-		const guild = await client.guilds.fetch(lobby.guild);
+	private async _deleteRole(lobby: Lobby): Promise<void> {
+		const guild = await this.client.guilds.fetch(lobby.guild);
 		await (await guild.roles.fetch(lobby.role))?.delete();
 	}
 
-	private async _deleteChannels(
-		client: DiscordClient,
-		{ categoryChannel, textChannel, voiceChannel }: LobbyChannels,
-	): Promise<void> {
+	private async _deleteChannels({
+		categoryChannel,
+		textChannel,
+		voiceChannel,
+	}: LobbyChannels): Promise<void> {
 		// Making sure channels do not move around too much using this order
-		await (await client.channels.fetch(voiceChannel)).delete();
-		await (await client.channels.fetch(textChannel)).delete();
-		await (await client.channels.fetch(categoryChannel)).delete();
+		await (await this.client.channels.fetch(voiceChannel)).delete();
+		await (await this.client.channels.fetch(textChannel)).delete();
+		await (await this.client.channels.fetch(categoryChannel)).delete();
 	}
 
 	public async playerJoinLobby(locale: string, id: string): Promise<Lobby | undefined> {
@@ -101,6 +100,6 @@ export class MatchmakingService {
 	private async _getAvailableGuild(): Promise<Guild | undefined> {
 		const hostGuild = await FirebaseService.getAvailableHostGuild();
 		if (!hostGuild || !hostGuild.guildId) return undefined;
-		return DiscordClientService.INSTANCE.client.guilds.fetch(hostGuild.guildId);
+		return this.client.guilds.fetch(hostGuild.guildId);
 	}
 }

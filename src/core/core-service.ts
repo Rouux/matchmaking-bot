@@ -1,5 +1,7 @@
 import _ from "lodash";
+import { BaseDiscord } from "./base-discord";
 import { DiscordService } from "./discord/discord-service";
+import { DiscordClientService } from "./discord/services/discord-client-service";
 import { ICoreConfig } from "./interfaces/core-config-interface";
 import { LoggerService } from "./utils/logger/logger-service";
 
@@ -18,6 +20,7 @@ export class CoreService {
 		return Promise.resolve() // Just to keep each init lined up
 			.then(() => LoggerService.INSTANCE.init(logger))
 			.then(() => DiscordService.INSTANCE.start(config))
+			.then(() => BaseDiscord.setClient(DiscordClientService.INSTANCE.client))
 			.then(() => this._logSuccess())
 			.catch((err) => Promise.reject(this._logError(err)));
 	}
