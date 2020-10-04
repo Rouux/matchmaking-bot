@@ -26,6 +26,10 @@ export class Lobby {
 
 	public channels!: LobbyChannels;
 
+	public role: string;
+
+	public guild: string;
+
 	constructor(options: LobbyOptions) {
 		this.name = options.name || ``;
 		this.locale = options.locale || `EN`;

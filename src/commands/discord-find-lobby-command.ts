@@ -52,8 +52,9 @@ export class DiscordFindLobbyCommand extends MatchmakingCommand {
 		const invite = await voiceChannel.createInvite({
 			temporary: true,
 			maxAge: 60000,
+			maxUses: 1,
 		});
-		return message.channel.send(invite.url);
+		return message.author.send(invite.url);
 	}
 
 	private async _awaitAnswer(message: Message): Promise<number> {
