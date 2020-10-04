@@ -7,6 +7,16 @@ import { FirebaseService } from "../firebase/firebase-service";
 import { BaseDiscord } from "../core/base-discord";
 
 export class MatchmakingService extends BaseDiscord {
+	// eslint-disable-next-line max-len
+	public async findLobby(locale: string, documentId: string): Promise<Lobby | undefined> {
+		LoggerService.INSTANCE.debug({
+			context: `MatchmakingService::findLobby`,
+			message: `locale: ${locale}, documentId: ${documentId}`,
+		});
+
+		return FirebaseService.getLobbyByLocaleAndId(locale, documentId);
+	}
+
 	public async findLobbies({ locale, name }: Partial<Lobby>): Promise<Lobby[]> {
 		LoggerService.INSTANCE.debug({
 			context: `MatchmakingService::findLobbies`,

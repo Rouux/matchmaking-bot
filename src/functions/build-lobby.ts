@@ -12,9 +12,10 @@ export async function createChannels(
 	id: string,
 	voiceSlots = -1,
 ): Promise<LobbyChannels> {
-	const parent = await createCategoryChannel(guild, locale, id, role);
-	const textChannel = await createTextChannel(guild, locale, id, parent);
-	const voiceChannel = await createVoiceChannel(guild, locale, id, parent, voiceSlots);
+	const name = `${locale}-${id}`;
+	const parent = await createCategoryChannel(guild, name, role);
+	const textChannel = await createTextChannel(guild, name, parent);
+	const voiceChannel = await createVoiceChannel(guild, name, parent, voiceSlots);
 	return {
 		categoryChannel: parent.id,
 		textChannel: textChannel.id,
@@ -22,14 +23,12 @@ export async function createChannels(
 	};
 }
 
-// eslint-disable-next-line max-lines-per-function
 async function createCategoryChannel(
 	guild: Guild,
-	locale: string,
-	id: string,
+	name: string,
 	role: Role,
 ): Promise<CategoryChannel> {
-	return guild.channels.create(`${locale}-${id}`, {
+	return guild.channels.create(name, {
 		type: `category`,
 		position: 999,
 		permissionOverwrites: [
@@ -44,11 +43,10 @@ async function createCategoryChannel(
 
 async function createTextChannel(
 	guild: Guild,
-	locale: string,
-	id: string,
+	name: string,
 	parent: CategoryChannel,
 ): Promise<TextChannel> {
-	return guild.channels.create(`${locale}-${id}`, {
+	return guild.channels.create(name, {
 		type: `text`,
 		parent,
 		permissionOverwrites: [
@@ -62,15 +60,13 @@ async function createTextChannel(
 	});
 }
 
-// eslint-disable-next-line max-lines-per-function
 async function createVoiceChannel(
 	guild: Guild,
-	locale: string,
-	id: string,
+	name: string,
 	parent: CategoryChannel,
 	maxVoiceChannelSlots = -1,
 ): Promise<VoiceChannel> {
-	return guild.channels.create(`${locale}-${id}`, {
+	return guild.channels.create(name, {
 		type: `voice`,
 		userLimit: maxVoiceChannelSlots !== -1 ? maxVoiceChannelSlots : undefined,
 		parent,

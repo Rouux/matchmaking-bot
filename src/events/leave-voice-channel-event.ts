@@ -26,7 +26,7 @@ export class LeaveVoiceChannelEvent extends MatchmakingEvent {
 	}
 
 	private _logInfoEmptyChannel(voiceChannel: VoiceChannel) {
-		LoggerService.INSTANCE.info({
+		LoggerService.INSTANCE.debug({
 			context: `Event - Leave Voice Channel`,
 			message: `They is no more member in the channel ${voiceChannel.name} !`,
 		});

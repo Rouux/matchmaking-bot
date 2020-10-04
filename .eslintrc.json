@@ -26,6 +26,7 @@
 		"class-methods-use-this": "off",
 		"quotes": ["error", "backtick"],
 		"max-classes-per-file": "off",
+		"arrow-parens": "off",
 		"no-param-reassign": "off",
 		"@typescript-eslint/ban-ts-comment": "off",
 		"no-use-before-define": "off",

@@ -52,8 +52,15 @@ export class DiscordFindLobbyCommand extends MatchmakingCommand {
 		const invite = await voiceChannel.createInvite({
 			temporary: true,
 			maxAge: 60000,
-			maxUses: 1,
+			maxUses: 2,
+			reason: lobby.documentId,
 		});
+		const { guild } = voiceChannel;
+		const member = await guild.members
+			.fetch(message.author.id)
+			.then((guildMember) => guildMember)
+			.catch(() => undefined);
+		if (member) member.roles.add(lobby.role);
 		return message.author.send(invite.url);
 	}
 
@@ -63,9 +70,11 @@ export class DiscordFindLobbyCommand extends MatchmakingCommand {
 		return message.channel
 			.awaitMessages(authorsMatch, { max: 1, time: time * 1000 })
 			.then((collected) => {
-				const { content } = collected.first()!;
-				const choice = Number.parseInt(content, 10);
-				if (_.isNaN(choice)) message.channel.send(`The choice '${content}' is not valid`);
+				const msg = collected.first();
+				if (!msg) return NaN;
+				const choice = Number.parseInt(msg.content, 10);
+				if (_.isNaN(choice))
+					message.channel.send(`The choice '${msg.content}' is not valid`);
 				return choice;
 			})
 			.catch(() => {
